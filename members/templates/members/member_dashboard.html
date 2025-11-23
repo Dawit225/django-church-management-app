@@ -3,60 +3,56 @@
 {% block title %}My Member Dashboard{% endblock %}
 
 {% block content %}
-    <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    <div class="card" style="max-width: 800px; margin: 0 auto;"> 
         <h2>Welcome, {{ user.get_full_name|default:user.username }}!</h2>
         
         <p>This is your private member dashboard. You are successfully logged in.</p>
 
         {% if user.is_authenticated and user.member %}
             <h3>My Church Profile</h3>
-            <ul>
-                <li>Age: {{ user.member.age }}</li>
-                <li>Address: {{ user.member.address }}</li>
-                <li>Has Confessor: {{ user.member.has_father_confessor|yesno:"Yes,No" }}</li>
-                <li>Joined: {{ user.member.date_joined|date:"F j, Y" }}</li>
+            <ul> 
+                <li><strong>Age:</strong> {{ user.member.age }}</li>
+                <li><strong>Address:</strong> {{ user.member.address }}</li>
+                <li><strong>Has Confessor:</strong> {{ user.member.has_father_confessor|yesno:"Yes,No" }}</li>
+                <li><strong>Joined:</strong> {{ user.member.date_joined|date:"F j, Y" }}</li>
             </ul>
             
             <p><a href="{% url 'member_profile_update' %}">Edit My Profile</a></p>
             
         {% else %}
-            <p style="color: orange;">Note: Your core member profile data is missing or not yet linked. Please contact an administrator.</p>
+            <p class="error">Note: Your core member profile data is missing or not yet linked. Please contact an administrator.</p>
         {% endif %}
 
         <hr style="margin: 20px 0;">
         
         <h3>Church Resources</h3>
-        <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;">
-                <a href="{% url 'announcement_list' %}" style="font-size: 1.1em; color: green;">
-                    📣 View All Announcements
-                </a>
-            </li>
-            <li style="margin-bottom: 10px;">
-                <a href="{% url 'video_list' %}" style="font-size: 1.1em; color: darkorange;">
-                    🎬 Watch Recent Video Content
-                </a>
-            </li>
+        <ul class="resource-list">
+            <li><a href="{% url 'announcement_list' %}">📣 View All Announcements</a></li>
+            <li><a href="{% url 'video_list' %}">🎬 Watch Recent Video Content</a></li>
         </ul>
 
         <hr style="margin: 20px 0;">
 
-        <p style="margin-top: 2rem;">
+        <p style="margin-top: 10px;">
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %} 
-                <button type="submit" 
-                        style="
-                            background: none; 
-                            border: none; 
-                            padding: 0; 
-                            cursor: pointer; 
-                            color: red; 
-                            text-decoration: underline; 
-                            font-size: 1em;
-                        ">
+                <button type="submit" class="logout-btn">
                     Log Out
                 </button>
             </form>
         </p>
     </div>
+
+    <style>
+        /* Specific style for the logout button to override the default button style */
+        .logout-btn {
+            background: none; 
+            border: none; 
+            padding: 0; 
+            cursor: pointer; 
+            color: #c0392b; 
+            text-decoration: underline; 
+            font-size: 1em;
+        }
+    </style>
 {% endblock content %}

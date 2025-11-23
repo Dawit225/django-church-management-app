@@ -16,6 +16,8 @@ from django.urls import reverse_lazy
 # FIX: Ensure ListView is imported here:
 from django.views.generic import TemplateView, View, ListView 
 from django.views.generic.edit import FormView, UpdateView
+from django.views.generic import TemplateView, View, ListView, DetailView # <<< MUST HAVE DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Member
 from .forms import MemberUserCreationForm, MemberProfileForm # Import the new forms
@@ -127,3 +129,4 @@ class VideoContentListView(LoginRequiredMixin, ListView):
     template_name = 'members/video_list.html'
     context_object_name = 'videos' # The variable name to use in the template
     paginate_by = 9 # Display a grid of 9 videos
+
