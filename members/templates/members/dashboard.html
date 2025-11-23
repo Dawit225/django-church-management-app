@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}My Member Dashboard{% endblock %}
+
+{% block content %}
+    <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h2>Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+        
+        <p>This is your private member dashboard. You are successfully logged in.</p>
+
+        {% if user.is_authenticated and user.member %}
+            <h3>My Church Profile</h3>
+            <ul>
+                <li>Age: {{ user.member.age }}</li>
+                <li>Address: {{ user.member.address }}</li>
+                <li>Has Confessor: {{ user.member.has_father_confessor|yesno:"Yes,No" }}</li>
+                <li>Joined: {{ user.member.date_joined|date:"F j, Y" }}</li>
+            </ul>
+        {% else %}
+            <p style="color: orange;">Note: Your core member profile data is missing or not yet linked.</p>
+        {% endif %}
+
+        <p style="margin-top: 2rem;">
+            <a href="{% url 'logout' %}" style="color: red;">Log Out</a>
+        </p>
+    </div>
+{% endblock content %}

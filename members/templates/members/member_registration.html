@@ -7,9 +7,24 @@
         <h2>New Member Registration</h2>
         <form method="post">
             {% csrf_token %}
-            {% for field in form %}
+            
+            <h3>1. Create Login Details</h3>
+            {% for field in user_form %}
                 <div class="form-row">
-                    {{ field.errors }} <p>{{ field.label_tag }}</p>
+                    {{ field.errors }}
+                    <p>{{ field.label_tag }}</p>
+                    <p>{{ field }}</p>
+                    {% if field.help_text %}
+                        <small style="color: #666;">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <h3>2. Church Profile</h3>
+            {% for field in profile_form %}
+                <div class="form-row">
+                    {{ field.errors }}
+                    <p>{{ field.label_tag }}</p>
                     <p>{{ field }}</p>
                     {% if field.help_text %}
                         <small style="color: #666;">{{ field.help_text }}</small>
@@ -18,7 +33,7 @@
             {% endfor %}
             
             <button type="submit" style="padding: 10px 20px; background-color: darkblue; color: white; border: none; cursor: pointer;">
-                Register Now
+                Complete Registration
             </button>
         </form>
     </div>

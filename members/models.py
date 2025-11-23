@@ -1,12 +1,12 @@
 from django.db import models
+# Import the User model that Django uses for authentication
+from django.contrib.auth.models import User 
 
-# Define gender choices for better data integrity
 GENDER_CHOICES = [
     ('M', 'Male'),
     ('F', 'Female'),
 ]
 
-# Define choices for the confessor question
 CONFESSOR_CHOICES = [
     (True, 'Yes'),
     (False, 'No'),
@@ -14,10 +14,13 @@ CONFESSOR_CHOICES = [
 
 class Member(models.Model):
     """
-    Represents a registered member of the church.
+    Holds church-specific profile data, linked to one Django User for login/security.
     """
-    # Personal Information
-    full_name = models.CharField(max_length=200, help_text="The member's full legal name.")
+    # CRITICAL: One-to-One Link to the User Account
+    user = models.OneToOneField(User, on_delete=models.CASCADE) 
+    # Why CASCADE? If the User account is deleted, their Member profile is also deleted.
+    
+    # Personal Information (fields that are specific to the church context)
     age = models.IntegerField()
     gender = models.CharField(
         max_length=1,
@@ -25,8 +28,7 @@ class Member(models.Model):
         default='M'
     )
     
-    # Contact Information
-    email = models.EmailField(unique=True, help_text="Must be unique. Used for member login/contact.")
+    # Contact Information (We removed 'email' as the User model handles it)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True)
 
@@ -37,18 +39,16 @@ class Member(models.Model):
         verbose_name="Has a Father Confessor?"
     )
 
-    # Tracking/Meta Fields (Best Practice)
+    # Tracking/Meta Fields
     date_joined = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     
     # --- Model Methods ---
 
     def __str__(self):
-        """String representation of the object, used primarily by the Django Admin."""
-        return self.full_name
+        """Uses the linked User's username/email for a clear string representation."""
+        return f"Member: {self.user.username} ({self.user.email})"
 
     class Meta:
-        """Options for the model."""
-        ordering = ['full_name'] # Default ordering for querysets
-        verbose_name = "Church Member"
-        verbose_name_plural = "Church Members"
+        # ... (ordering and verbose_name can remain the same)
+        pass
