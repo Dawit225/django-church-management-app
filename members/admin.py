@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Member
+from .models import Member, Announcement, VideoContent # Import new models
 
 # Optional: Customize the admin list view for the Member model
 @admin.register(Member)
@@ -44,3 +45,40 @@ class MemberAdmin(admin.ModelAdmin):
 
 # Note: We removed 'full_name' and 'email' from the Admin configuration
 # and replaced them with the method calls 'get_full_name' and 'get_email'.
+
+# 1. Admin for Announcements
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_event', 'event_date', 'posted_by', 'created_at')
+    list_filter = ('is_event', 'created_at')
+    search_fields = ('title', 'content')
+    date_hierarchy = 'created_at' # Add drill-down navigation by date
+    
+    # Automatically set posted_by to the currently logged-in admin user
+    def save_model(self, request, obj, form, change):
+        if not obj.pk: # Only set on creation
+            obj.posted_by = request.user
+        super().save_model(request, obj, form, change)
+
+# 2. Admin for Video Content
+@admin.register(VideoContent)
+class VideoContentAdmin(admin.ModelAdmin):
+    list_display = ('title', 'youtube_url', 'posted_by', 'created_at')
+    search_fields = ('title', 'description')
+    
+    # Use fieldsets to organize the display
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'youtube_url', 'description')
+        }),
+        ('Metadata', {
+            'fields': ('posted_by',),
+            'classes': ('collapse',),
+        })
+    )
+    
+    # Automatically set posted_by
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.posted_by = request.user
+        super().save_model(request, obj, form, change)
