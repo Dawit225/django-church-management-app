@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Church Video Library{% endblock %}
+
+{% block content %}
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <h2>Video Library</h2>
+
+        {% if videos %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                {% for video in videos %}
+                    {% with embed_id=video.get_youtube_embed_id %}
+                        {% if embed_id %}
+                            <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                                <h4>{{ video.title }}</h4>
+                                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                                    <iframe src="https://www.youtube.com/embed/{{ embed_id }}" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen 
+                                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                    </iframe>
+                                </div>
+                                <p style="font-size: 0.9em; margin-top: 10px;">{{ video.description|truncatechars:100 }}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% empty %}
+                    <p>No videos have been posted yet.</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

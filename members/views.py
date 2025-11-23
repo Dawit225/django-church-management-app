@@ -11,6 +11,11 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import Http404
+from .models import Member, Announcement, VideoContent
+from django.urls import reverse_lazy
+# FIX: Ensure ListView is imported here:
+from django.views.generic import TemplateView, View, ListView 
+from django.views.generic.edit import FormView, UpdateView
 
 from .models import Member
 from .forms import MemberUserCreationForm, MemberProfileForm # Import the new forms
@@ -107,3 +112,18 @@ class MemberProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         This is technically redundant because of get_object(), but it's a solid defense layer.
         """
         return self.get_object().user == self.request.user
+    
+class AnnouncementListView(LoginRequiredMixin, ListView):
+    """Displays a list of all church announcements."""
+    model = Announcement
+    template_name = 'members/announcement_list.html'
+    context_object_name = 'announcements' # The variable name to use in the template
+    paginate_by = 10 # Optional: Show 10 announcements per page
+
+
+class VideoContentListView(LoginRequiredMixin, ListView):
+    """Displays a list of all church video content."""
+    model = VideoContent
+    template_name = 'members/video_list.html'
+    context_object_name = 'videos' # The variable name to use in the template
+    paginate_by = 9 # Display a grid of 9 videos

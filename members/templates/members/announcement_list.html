@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Church Announcements{% endblock %}
+
+{% block content %}
+    <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+        <h2>Church Announcements</h2>
+
+        {% for announcement in announcements %}
+            <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-left: 5px solid darkblue;">
+                <h3>{{ announcement.title }}</h3>
+                <p style="font-size: 0.9em; color: #666; margin-top: -10px;">
+                    Posted: {{ announcement.created_at|date:"F j, Y, P" }} | 
+                    {% if announcement.is_event %}
+                        <strong style="color: darkred;">EVENT: {{ announcement.event_date|date:"l, F j, Y" }}</strong>
+                    {% else %}
+                        General Update
+                    {% endif %}
+                </p>
+                <p>{{ announcement.content|linebreaks }}</p>
+            </div>
+        {% empty %}
+            <p>There are no announcements posted at this time.</p>
+        {% endfor %}
+        
+    </div>
+{% endblock content %}
