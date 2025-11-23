@@ -1,0 +1,13 @@
+# Python / Django specific
+__pycache__/
+*.pyc
+church_venv/                  # Critical: Do not track your virtual environment
+.env                   # If we use environment variables later
+
+# Operating System specific
+.DS_Store              # macOS
+Thumbs.db              # Windows
+
+# Database specific
+db.sqlite3             # CRITICAL: We don't track the development database
+/media                 # For files uploaded by users later
