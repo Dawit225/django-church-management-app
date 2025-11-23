@@ -16,12 +16,15 @@
                 <li>Has Confessor: {{ user.member.has_father_confessor|yesno:"Yes,No" }}</li>
                 <li>Joined: {{ user.member.date_joined|date:"F j, Y" }}</li>
             </ul>
+            
+            <p><a href="{% url 'member_profile_update' %}">Edit My Profile</a></p>
+            
         {% else %}
             <p style="color: orange;">Note: Your core member profile data is missing or not yet linked.</p>
         {% endif %}
 
         <p style="margin-top: 2rem;">
-            <a href="{% url 'logout' %}" style="color: red;">Log Out</a>
+            <a href="{% url 'logout' %}" style="color: red;">Log Out</a> 
         </p>
     </div>
 {% endblock content %}

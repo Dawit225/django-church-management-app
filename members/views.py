@@ -6,6 +6,11 @@ from django.shortcuts import redirect, render
 from django.views.generic.edit import FormView, UpdateView # Added UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Added UserPassesTestMixin
 from django.shortcuts import redirect, render, get_object_or_404 # Added get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect, render, get_object_or_404
+from django.http import Http404
 
 from .models import Member
 from .forms import MemberUserCreationForm, MemberProfileForm # Import the new forms
@@ -81,12 +86,19 @@ class MemberProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
     # CRITICAL: Security Check 1 - Ensure the user only edits THEIR profile
     def get_object(self, queryset=None):
         """
-        Overrides the default to fetch the Member object linked to the current user.
-        We don't rely on a primary key (pk) in the URL.
+        Tries to return the Member object linked to the current user.
+        If not found, it raises a 404, or we can handle the redirect here.
         """
-        # If the user is logged in (guaranteed by LoginRequiredMixin), 
-        # try to return their associated Member object.
-        return get_object_or_404(Member, user=self.request.user)
+        try:
+            # We use .get() here instead of get_object_or_404 to explicitly handle the exception
+            return Member.objects.get(user=self.request.user)
+        except Member.DoesNotExist:
+            # OPTIONAL GRACEFUL HANDLING:
+            # Instead of allowing the 404 to be raised, you could redirect
+            # the user to a page that prompts them to create a profile.
+            # For now, we'll stick to the original logic which raises 404 
+            # (which is what get_object_or_404 did, just explicitly now).
+            raise Http404("No Member profile found for the logged-in user.")
 
     # CRITICAL: Security Check 2 - UserPassesTestMixin requires this method.
     def test_func(self):

@@ -16,22 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-# CRITICAL: TemplateView must be imported
-from django.views.generic import TemplateView 
+from django.views.generic import TemplateView
+# Import the built-in LogoutView
+from django.contrib.auth.views import LogoutView 
 
 urlpatterns = [
     # Project-level Admin site
     path('admin/', admin.site.urls),
     
-    # Include all URLs from the 'members' app under the path 'members/'
+    # 1. EXPLICIT LOGOUT DEFINITION (FIX)
+    # Define the logout URL explicitly using the correct name 'logout'
+    path('accounts/logout/', LogoutView.as_view(), name='logout'),
+    
+    # CORE AUTHENTICATION PATHS (This include will handle all others like login, password reset, etc.)
+    path('accounts/', include('django.contrib.auth.urls')), 
+    
+    # Member App Paths
     path('members/', include('members.urls')),
 
-    # 1. SUCCESS PAGE: The success_url defined in MemberRegistrationView resolves to this name.
-    # We correctly use TemplateView.as_view(template_name=...) here.
+    # Success/Home Paths
     path('members/success/', 
          TemplateView.as_view(template_name='members/registration_success.html'), 
          name='registration_success'),
-
-    # 2. HOME PAGE: A simple root path using TemplateView
     path('', TemplateView.as_view(template_name='base.html'), name='home'),
 ]
